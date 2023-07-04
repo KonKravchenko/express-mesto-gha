@@ -9,20 +9,20 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
-  if (!name || !link) {
-    res
-      .status(ERROR_BAD_REQUEST)
-      .send({ message: 'Переданы некорректные данные' });
-    return;
-  }
+  // if (!name || !link) {
+  //   res
+  //     .status(ERROR_BAD_REQUEST)
+  //     .send({ message: 'Переданы некорректные данные' });
+  //   return;
+  // }
 
   Card.create({ name, link, owner })
     .then((card) => {
-      res.send({ data: card });
+      res
+        .status(201)
+        .send({ data: card });
     })
     .catch((error) => {
-      // тут проверяем не является ли ошибка
-      // ошибкой валидации
       if (error instanceof mongoose.Error.ValidationError) {
         res
           .status(ERROR_BAD_REQUEST)
@@ -30,7 +30,6 @@ module.exports.createCard = (req, res) => {
         return;
       }
 
-      // в остальных случаях выкидываем 500 ошибку
       res
         .status(ERROR_INTERNAL_SERVER)
         .send({ message: 'Ошибка сервера' });
