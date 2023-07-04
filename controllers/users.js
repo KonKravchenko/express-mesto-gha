@@ -9,12 +9,12 @@ const ERROR_INTERNAL_SERVER = 500;
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
-  if (!name || !about || !avatar) {
-    res
-      .status(ERROR_BAD_REQUEST)
-      .send({ message: 'Переданы некорректные данные' });
-    return;
-  }
+  // if (!name || !about || !avatar) {
+  //   res
+  //     .status(ERROR_BAD_REQUEST)
+  //     .send({ message: 'Переданы некорректные данные' });
+  //   return;
+  // }
 
   User.create({ name, about, avatar })
     .then((user) => {
