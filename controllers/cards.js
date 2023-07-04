@@ -64,8 +64,8 @@ module.exports.deleteCard = (req, res) => {
           .send({ message: 'Карточка не найдена' });
       } else {
         res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка сервера' });
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные' });
       }
     });
 };
