@@ -7,7 +7,6 @@ const ERROR_NOT_FOUND = 404;
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-// const notFoundRouter = require('./routes/notFound');
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
