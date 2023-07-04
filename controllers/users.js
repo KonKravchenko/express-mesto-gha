@@ -69,6 +69,10 @@ const getUser = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь не найден' });
+      } else if (err.status === ERROR_BAD_REQUEST) {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные' });
       } else {
         res
           .status(ERROR_INTERNAL_SERVER)
