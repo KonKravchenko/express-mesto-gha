@@ -74,30 +74,47 @@ const getUser = (req, res) => {
 const changeProfileData = (req, res) => {
   const { name, about } = req.body;
 
+  // if (!name || !about) {
+  //   res
+  //     .status(ERROR_BAD_REQUEST)
+  //     .send({ message: 'Переданы некорректные данные' });
+  //   return;
+  // }
+
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
     { new: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      res.send({ data: user });
+      res.status(200).send(user);
     })
-    .catch((error) => {
-      if (error instanceof mongoose.Error.ValidationError) {
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
-        return;
+      } else if (err.message === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь не найден' });
+      } else {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные' });
       }
-
-      res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
     });
 };
 
 const changeAvatar = (req, res) => {
   const { avatar } = req.body;
+  // if (!avatar) {
+  //   res
+  //     .status(ERROR_BAD_REQUEST)
+  //     .send({ message: 'Переданы некорректные данные' });
+  //   return;
+  // }
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
