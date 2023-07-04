@@ -9,13 +9,6 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
-  // if (!name || !link) {
-  //   res
-  //     .status(ERROR_BAD_REQUEST)
-  //     .send({ message: 'Переданы некорректные данные' });
-  //   return;
-  // }
-
   Card.create({ name, link, owner })
     .then((card) => {
       res
