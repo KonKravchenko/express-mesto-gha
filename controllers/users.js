@@ -60,6 +60,9 @@ const getUser = (req, res) => {
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
       }
+      res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: 'Ошибка сервера' });
     });
 };
 
@@ -94,6 +97,9 @@ const changeProfileData = (req, res) => {
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
       }
+      res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: 'Ошибка сервера' });
     });
 };
 
