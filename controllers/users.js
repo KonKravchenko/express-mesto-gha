@@ -90,21 +90,35 @@ const changeProfileData = (req, res) => {
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
+    .catch((error) => {
+      // тут проверяем не является ли ошибка
+      // ошибкой валидации
+      if (error instanceof mongoose.Error.ValidationError) {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
-      } else if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь не найден' });
-      } else {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
+        return;
       }
+      // в остальных случаях выкидываем 500 ошибку
+      res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: 'Ошибка сервера' });
     });
+    // .catch((error) => {
+    //   if (error instanceof mongoose.Error.ValidationError) {
+    //     res
+    //       .status(ERROR_BAD_REQUEST)
+    //       .send({ message: 'Переданы некорректные данные' });
+    //   } else if (err.message === 'NotValidId') {
+    //     res
+    //       .status(ERROR_NOT_FOUND)
+    //       .send({ message: 'Пользователь не найден' });
+    //   } else {
+    //     res
+    //       .status(ERROR_BAD_REQUEST)
+    //       .send({ message: 'Переданы некорректные данные' });
+    //   }
+    // });
 };
 
 const changeAvatar = (req, res) => {
