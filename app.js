@@ -6,6 +6,7 @@ const app = express();
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+// const notFoundRouter = require('./routes/notFound');
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
@@ -20,6 +21,9 @@ app.use((req, res, next) => {
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+app.use('*', (req, res) => {
+  res.send('what???', 404);
+});
 
 app.listen(3000, () => {
   console.log('Сервер запущен!');
