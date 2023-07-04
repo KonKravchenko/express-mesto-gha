@@ -76,11 +76,18 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((card) => res.status(200).send({ data: card }))
-    .catch(() => {
-      res
-        .status(ERROR_BAD_REQUEST)
-        .send({ message: 'Переданы некорректные данные' });
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Карточка не найдена' });
+      } else {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные' });
+      }
     });
 };
 
