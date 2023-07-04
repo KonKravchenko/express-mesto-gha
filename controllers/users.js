@@ -61,8 +61,8 @@ const getUser = (req, res) => {
   const { id } = req.params;
   User.findById(id)
     .orFail(new Error('NotValidId'))
-    .then(({ name, about, avatar, _id }) => {
-      res.status(200).send({ name, about, avatar, _id });
+    .then((user) => {
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {

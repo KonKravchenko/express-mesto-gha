@@ -55,7 +55,7 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       res
         .status(200)
-        .send({data: card, message: 'Карточка удалена' });
+        .send({ data: card, message: 'Карточка удалена' });
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
@@ -77,7 +77,7 @@ module.exports.likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ data: card }))
-    .catch((error) => {
+    .catch(() => {
       res
         .status(ERROR_INTERNAL_SERVER)
         .send({ message: 'Ошибка сервера' });
@@ -91,7 +91,7 @@ module.exports.dislikeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ data: card }))
-    .catch((error) => {
+    .catch(() => {
       res
         .status(ERROR_INTERNAL_SERVER)
         .send({ message: 'Ошибка сервера' });
