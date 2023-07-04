@@ -43,8 +43,10 @@ module.exports.getCards = (req, res) => {
     .then((card) => {
       res.send({ data: card });
     })
-    .catch((error) => {
-      res.status(400).send(error);
+    .catch(() => {
+      res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: 'Ошибка сервера' });
     });
 };
 
