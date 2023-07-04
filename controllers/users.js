@@ -48,12 +48,12 @@ const getUsers = (req, res) => {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
-        return;
+      } else {
+        // в остальных случаях выкидываем 500 ошибку
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка сервера' });
       }
-      // в остальных случаях выкидываем 500 ошибку
-      res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
     });
 };
 
