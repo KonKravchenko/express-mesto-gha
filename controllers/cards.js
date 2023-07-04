@@ -79,8 +79,8 @@ module.exports.likeCard = (req, res) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch(() => {
       res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
+        .status(ERROR_BAD_REQUEST)
+        .send({ message: 'Переданы некорректные данные' });
     });
 };
 
