@@ -52,17 +52,21 @@ const getUser = (req, res) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
+        // console.log(err)
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь не найден' });
-      } else {
+      } else if (err.name === 'CastError') {
+        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
+      } else {
+        // console.log(err)
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка сервера' });
       }
-      res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
     });
 };
 
@@ -92,14 +96,17 @@ const changeProfileData = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь не найден' });
-      } else {
+      } else if (err.name === 'CastError') {
+        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
+      } else {
+        // console.log(err)
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка сервера' });
       }
-      res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
     });
 };
 
@@ -114,19 +121,32 @@ const changeAvatar = (req, res) => {
       runValidators: true,
     },
   )
+    .orFail(new Error('NotValidId'))
     .then((user) => {
-      res.send({ data: user });
+      res
+        .status(200)
+        .send({ data: user });
     })
-    .catch((error) => {
-      if (error instanceof mongoose.Error.ValidationError) {
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
-        return;
+      } else if (err.message === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь не найден' });
+      } else if (err.name === 'CastError') {
+        // console.log(err.name)
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные' });
+      } else {
+        // console.log(err)
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка сервера' });
       }
-      res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
     });
 };
 

@@ -56,10 +56,16 @@ module.exports.deleteCard = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
-      } else {
+      } else if (err.name === 'CastError') {
+        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
+      } else {
+        // console.log(err)
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка сервера' });
       }
     });
 };
@@ -77,10 +83,16 @@ module.exports.likeCard = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
-      } else {
+      } else if (err.name === 'CastError') {
+        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
+      } else {
+        // console.log(err)
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка сервера' });
       }
     });
 };
@@ -98,10 +110,16 @@ module.exports.dislikeCard = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
-      } else {
+      } else if (err.name === 'CastError') {
+        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
+      } else {
+        // console.log(err)
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка сервера' });
       }
     });
 };
