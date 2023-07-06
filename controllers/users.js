@@ -36,7 +36,7 @@ const getUsers = (req, res) => {
         .status(200)
         .send(users);
     })
-    .catch((error) => {
+    .catch(() => {
       res
         .status(ERROR_INTERNAL_SERVER)
         .send({ message: 'Ошибка сервера' });
@@ -52,17 +52,14 @@ const getUser = (req, res) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        // console.log(err)
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь не найден' });
       } else if (err.name === 'CastError') {
-        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
       } else {
-        // console.log(err)
         res
           .status(ERROR_INTERNAL_SERVER)
           .send({ message: 'Ошибка сервера' });
@@ -71,11 +68,11 @@ const getUser = (req, res) => {
 };
 
 const changeProfileData = (req, res) => {
-  const { name, about } = req.body;
+  const data = req;
 
   User.findByIdAndUpdate(
-    req.user._id,
-    { name, about },
+    data.user._id,
+    data.body,
     {
       new: true,
       runValidators: true,
@@ -97,12 +94,10 @@ const changeProfileData = (req, res) => {
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь не найден' });
       } else if (err.name === 'CastError') {
-        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
       } else {
-        // console.log(err)
         res
           .status(ERROR_INTERNAL_SERVER)
           .send({ message: 'Ошибка сервера' });
@@ -110,50 +105,18 @@ const changeProfileData = (req, res) => {
     });
 };
 
-const changeAvatar = (req, res) => {
-  const { avatar } = req.body;
+const changeProfileNameAbout = (req, data) => {
+  changeProfileData(req, data);
+};
 
-  User.findByIdAndUpdate(
-    req.user._id,
-    { avatar },
-    {
-      new: true,
-      runValidators: true,
-    },
-  )
-    .orFail(new Error('NotValidId'))
-    .then((user) => {
-      res
-        .status(200)
-        .send({ data: user });
-    })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-      } else if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь не найден' });
-      } else if (err.name === 'CastError') {
-        // console.log(err.name)
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-      } else {
-        // console.log(err)
-        res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка сервера' });
-      }
-    });
+const changeProfileAvatar = (req, data) => {
+  changeProfileData(req, data);
 };
 
 module.exports = {
   createUser,
   getUsers,
   getUser,
-  changeProfileData,
-  changeAvatar,
+  changeProfileNameAbout,
+  changeProfileAvatar,
 };
