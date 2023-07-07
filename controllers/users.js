@@ -68,11 +68,9 @@ const getUser = (req, res) => {
 };
 
 const changeProfileData = (req, res) => {
-  const data = req;
-
   User.findByIdAndUpdate(
-    data.user._id,
-    data.body,
+    req.user._id,
+    req.body,
     {
       new: true,
       runValidators: true,
@@ -93,10 +91,6 @@ const changeProfileData = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Пользователь не найден' });
-      } else if (err.name === 'CastError') {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
       } else {
         res
           .status(ERROR_INTERNAL_SERVER)
@@ -105,12 +99,12 @@ const changeProfileData = (req, res) => {
     });
 };
 
-const changeProfileNameAbout = (req, data) => {
-  changeProfileData(req, data);
+const changeProfileNameAbout = (req, res) => {
+  changeProfileData(req, res);
 };
 
-const changeProfileAvatar = (req, data) => {
-  changeProfileData(req, data);
+const changeProfileAvatar = (req, res) => {
+  changeProfileData(req, res);
 };
 
 module.exports = {
