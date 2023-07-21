@@ -58,10 +58,10 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   if (!email || !password) {
-    res
-      .status(ERROR_BAD_REQUEST)
-      .send({ message: 'Email и пароль не могут быть пустыми' });
-    // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
+    // res
+    //   .status(ERROR_BAD_REQUEST)
+    //   .send({ message: 'Email и пароль не могут быть пустыми' });
+    throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     const validEmail = validator.isEmail(email);
     bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
@@ -85,31 +85,32 @@ const createUser = (req, res, next) => {
               })
               .catch((err) => {
                 if (err instanceof mongoose.Error.ValidationError) {
-                  res
-                    .status(ERROR_BAD_REQUEST)
-                    .send({ message: 'Переданы некорректные данные' });
-                  // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
+                  // res
+                  //   .status(ERROR_BAD_REQUEST)
+                  //   .send({ message: 'Переданы некорректные данные' });
+                  throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
                 } else {
-                  res
-                    .status(ERROR_INTERNAL_SERVER)
-                    .send({ message: 'Ошибка сервера' });
-                  // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
+                  // res
+                  //   .status(ERROR_INTERNAL_SERVER)
+                  //   .send({ message: 'Ошибка сервера' });
+                  throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
                 }
-              });
+              })
+              .catch(next);
           } else if (validEmail === false) {
-            res
-              .status(ERROR_BAD_REQUEST)
-              .send({ message: 'Неверные email или пароль' });
-            // throw new ErrorAPI('Неверные email или пароль', ERROR_BAD_REQUEST);
+            // res
+            //   .status(ERROR_BAD_REQUEST)
+            //   .send({ message: 'Неверные email или пароль' });
+            throw new ErrorAPI('Неверные email или пароль', ERROR_BAD_REQUEST);
           }
         })
         .catch((err) => {
-          res
-            .status(400)
-            .send({ message: 'Произошла ошибка' });
-          // throw new ErrorAPI('Произошла ошибка', ERROR_BAD_REQUEST);
+          // res
+          //   .status(400)
+          //   .send({ message: 'Произошла ошибка' });
+          throw new ErrorAPI('Произошла ошибка', ERROR_BAD_REQUEST);
         })
-        // .catch(next);
+        .catch(next);
     });
   }
 };
@@ -203,10 +204,10 @@ const changeProfileData = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-        // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
+        // res
+        //   .status(ERROR_BAD_REQUEST)
+        //   .send({ message: 'Переданы некорректные данные' });
+        throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else if (err.message === 'NotValidId') {
         // res
         //   .status(ERROR_NOT_FOUND)
