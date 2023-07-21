@@ -58,20 +58,20 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   if (!email || !password) {
-    // res
-    //   .status(ERROR_BAD_REQUEST)
-    //   .send({ message: 'Email и пароль не могут быть пустыми' });
-    throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
+    res
+      .status(ERROR_BAD_REQUEST)
+      .send({ message: 'Email и пароль не могут быть пустыми' });
+    // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     const validEmail = validator.isEmail(email);
     bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
       User.findOne({ email })
         .then((user) => {
           if (user) {
-            // res
-            //   .status(409)
-            //   .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
-            throw new ErrorAPI('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
+            res
+              .status(409)
+              .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
+            // throw new ErrorAPI('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
           } else if (validEmail === true) {
             User.create({
               name, about, avatar, email, password: hash,
@@ -85,10 +85,10 @@ const createUser = (req, res, next) => {
               })
               .catch((err) => {
                 if (err instanceof mongoose.Error.ValidationError) {
-                  // res
-                  //   .status(ERROR_BAD_REQUEST)
-                  //   .send({ message: 'Переданы некорректные данные' });
-                  throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
+                  res
+                    .status(ERROR_BAD_REQUEST)
+                    .send({ message: 'Переданы некорректные данные' });
+                  // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
                 } else {
                   // res
                   //   .status(ERROR_INTERNAL_SERVER)
@@ -209,10 +209,10 @@ const changeProfileData = (req, res, next) => {
         //   .send({ message: 'Пользователь не найден' });
         throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
       } else if (err instanceof mongoose.Error.ValidationError) {
-        // res
-        //   .status(ERROR_BAD_REQUEST)
-        //   .send({ message: 'Переданы некорректные данные' });
-        throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные' });
+        // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else {
         // res
         //   .status(ERROR_INTERNAL_SERVER)
