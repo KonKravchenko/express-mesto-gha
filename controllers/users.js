@@ -9,26 +9,41 @@ const User = require('../models/user');
 const ERROR_BAD_REQUEST = 400;
 const ERROR_NOT_FOUND = 404;
 const ERROR_INTERNAL_SERVER = 500;
+const SALT_ROUNDS = 10;
 
 const JWT_SECRET = 'somethingverysecret';
 
 const login = (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) { return res.status(ERROR_BAD_REQUEST).send({ message: 'Email и пароль не могут быть пустыми' }); }
-
-  return User.findOne({ email }).select('+password')
-    .then((user) => {
-      const token = jwt.sign({ id: user._id }, JWT_SECRET);
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-          sameSite: true,
-        })
-        .send({ id: user._id });
-    })
-    .catch((error) => { res.status(ERROR_BAD_REQUEST).send({ message: 'Произошла ошибка авторизации' }); });
+  if (!email || !password) {
+    res
+      .status(ERROR_BAD_REQUEST)
+      .send({ message: 'Email и пароль не могут быть пустыми' });
+  } else {
+    User.findOne({ email }).select('+password')
+      .then((user) => {
+        bcrypt.compare(password, user.password, (err, isValidPassword) => {
+          if (!isValidPassword) {
+            res
+              .status(401)
+              .send({ message: 'Неверный имя пользователя или пароль' });
+          } else {
+            const token = jwt.sign({ id: user._id }, JWT_SECRET);
+            res
+              .cookie('jwt', token, {
+                maxAge: 3600000 * 24 * 7,
+                httpOnly: true,
+                sameSite: true,
+              })
+              .send({ id: user._id });
+          }
+        });
+      })
+      .catch((error) => {
+        res.status(ERROR_BAD_REQUEST).send({ message: 'Произошла ошибка авторизации' });
+      });
+  }
 };
 
 const createUser = (req, res) => {
@@ -39,39 +54,41 @@ const createUser = (req, res) => {
     res.status(ERROR_BAD_REQUEST).send({ message: 'Email и пароль не могут быть пустыми' });
   } else {
     const validEmail = validator.isEmail(email);
-    User.findOne({ email })
-      .then((user) => {
-        if (user) {
-          res.status(409).send({ message: 'Пользователь с таким Email уже зарегестрирован' });
-        } else if (validEmail === true) {
-          User.create({
-            name, about, avatar, email, password,
-          })
-            .then((data) => {
-              res
-                .status(201)
-                .send({
-                  name, about, avatar, email,
-                });
+    bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
+      User.findOne({ email })
+        .then((user) => {
+          if (user) {
+            res.status(409).send({ message: 'Пользователь с таким Email уже зарегестрирован' });
+          } else if (validEmail === true) {
+            User.create({
+              name, about, avatar, email, password: hash,
             })
-            .catch((error) => {
-              if (error instanceof mongoose.Error.ValidationError) {
+              .then((data) => {
                 res
-                  .status(ERROR_BAD_REQUEST)
-                  .send({ message: 'Переданы некорректные данные' });
-              } else {
-                res
-                  .status(ERROR_INTERNAL_SERVER)
-                  .send({ message: 'Ошибка сервера' });
-              }
-            });
-        } else if (validEmail === false) {
-          res
-            .status(ERROR_BAD_REQUEST)
-            .send({ message: 'Неверные email или пароль' });
-        }
-      })
-      .catch((error) => { res.status(400).send({ message: 'Произошла ошибка' }); });
+                  .status(201)
+                  .send({
+                    name, about, avatar, email,
+                  });
+              })
+              .catch((err) => {
+                if (err instanceof mongoose.Error.ValidationError) {
+                  res
+                    .status(ERROR_BAD_REQUEST)
+                    .send({ message: 'Переданы некорректные данные' });
+                } else {
+                  res
+                    .status(ERROR_INTERNAL_SERVER)
+                    .send({ message: 'Ошибка сервера' });
+                }
+              });
+          } else if (validEmail === false) {
+            res
+              .status(ERROR_BAD_REQUEST)
+              .send({ message: 'Неверные email или пароль' });
+          }
+        })
+        .catch((err) => { res.status(400).send({ message: 'Произошла ошибка' }); });
+    });
   }
 };
 
