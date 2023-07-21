@@ -41,7 +41,9 @@ const login = (req, res) => {
         });
       })
       .catch((error) => {
-        res.status(ERROR_BAD_REQUEST).send({ message: 'Произошла ошибка авторизации' });
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: 'Произошла ошибка авторизации' });
       });
   }
 };
