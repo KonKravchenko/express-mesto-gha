@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
 
   if (!cookie || !cookie.startsWith('jwt=')) {
     res
-      .status(401)
+      .status(400)
       .send({ message: 'Необходима авторизация' });
   }
   const token = cookie.replace('jwt=', '');
@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     // отправим ошибку если не  получилось
     res
-      .status(401)
+      .status(400)
       .send({ message: 'Необходима авторизация' });
   }
 
