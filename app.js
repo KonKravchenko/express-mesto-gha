@@ -28,18 +28,28 @@ app.use('/', router);
 
 // наш централизованный обработчик
 app.use((err, req, res, next) => {
-  // res.status(err.statusCode).send({ message: err.message });
 
-  const { statusCode = 500, message } = err;
-
+  if([400,401,403,409,500].includes(err.statusCode)){
   res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message
-    });
+    .status(err.statusCode)
+    .send({ message: err.message });
+  } else {
+    next(err)
+  }
+  // res
+  //   .status(err.statusCode)
+  //   .send({ message: err.message });
+
+  // const { statusCode = 500, message } = err;
+
+  // res
+  //   .status(statusCode)
+  //   .send({
+  //     // проверяем статус и выставляем сообщение в зависимости от него
+  //     message: statusCode === 500
+  //       ? 'На сервере произошла ошибка'
+  //       : message
+  //   });
 });
 
 app.listen(3000, () => {

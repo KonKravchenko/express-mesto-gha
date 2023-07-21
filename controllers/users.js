@@ -27,9 +27,6 @@ const login = (req, res, next) => {
       .then((user) => {
         bcrypt.compare(password, user.password, (err, isValidPassword) => {
           if (!isValidPassword) {
-            // res
-            //   .status(401)
-            //   .send({ message: 'Неверный имя пользователя или пароль' });
             throw new Error('Email и пароль не могут быть пустыми', ERROR_UNAUTHORIZED);
           } else {
             const token = jwt.sign({ id: user._id }, JWT_SECRET);
@@ -44,9 +41,6 @@ const login = (req, res, next) => {
         });
       })
       .catch((error) => {
-        // res
-        //   .status(ERROR_BAD_REQUEST)
-        //   .send({ message: 'Произошла ошибка авторизации' });
         throw new Error('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
       })
       .catch(next);
@@ -58,9 +52,6 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   if (!email || !password) {
-    // res
-    //   .status(ERROR_BAD_REQUEST)
-    //   .send({ message: 'Email и пароль не могут быть пустыми' });
     throw new Error('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     const validEmail = validator.isEmail(email);
@@ -68,9 +59,6 @@ const createUser = (req, res, next) => {
       User.findOne({ email })
         .then((user) => {
           if (user) {
-            // res
-            //   .status(409)
-            //   .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
             throw new Error('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
           } else if (validEmail === true) {
             User.create({
@@ -85,28 +73,16 @@ const createUser = (req, res, next) => {
               })
               .catch((err) => {
                 if (err instanceof mongoose.Error.ValidationError) {
-                  // res
-                  //   .status(ERROR_BAD_REQUEST)
-                  //   .send({ message: 'Переданы некорректные данные' });
                   throw new Error('Переданы некорректные данные', ERROR_BAD_REQUEST);
                 } else {
-                  // res
-                  //   .status(ERROR_INTERNAL_SERVER)
-                  //   .send({ message: 'Ошибка сервера' });
                   throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
                 }
               });
           } else if (validEmail === false) {
-            // res
-            //   .status(ERROR_BAD_REQUEST)
-            //   .send({ message: 'Неверные email или пароль' });
             throw new Error('Неверные email или пароль', ERROR_BAD_REQUEST);
           }
         })
         .catch((err) => {
-          // res
-          //   .status(400)
-          //   .send({ message: 'Произошла ошибка' });
           throw new Error('Произошла ошибка', ERROR_BAD_REQUEST);
         })
         .catch(next);
@@ -122,9 +98,6 @@ const getUsers = (req, res, next) => {
         .send(users);
     })
     .catch(() => {
-      // res
-      //   .status(ERROR_INTERNAL_SERVER)
-      //   .send({ message: 'Ошибка сервера' });
       throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
     })
     .catch(next);
@@ -139,19 +112,10 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        // res
-        //   .status(ERROR_NOT_FOUND)
-        //   .send({ message: 'Пользователь не найден' });
         throw new Error('Пользователь не найден', ERROR_NOT_FOUND);
       } else if (err.name === 'CastError') {
-        // res
-        //   .status(ERROR_BAD_REQUEST)
-        //   .send({ message: 'Переданы некорректные данные' });
         throw new Error('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else {
-        // res
-        //   .status(ERROR_INTERNAL_SERVER)
-        //   .send({ message: 'Ошибка сервера' });
         throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
       }
     })
@@ -167,19 +131,10 @@ const getAuthUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        // res
-        //   .status(ERROR_NOT_FOUND)
-        //   .send({ message: 'Пользователь не найден' });
         throw new Error('Пользователь не найден', ERROR_NOT_FOUND);
       } else if (err.name === 'CastError') {
-        // res
-        //   .status(ERROR_BAD_REQUEST)
-        //   .send({ message: 'Переданы некорректные данные' });
         throw new Error('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else {
-        // res
-        //   .status(ERROR_INTERNAL_SERVER)
-        //   .send({ message: 'Ошибка сервера' });
         throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
       }
     })
