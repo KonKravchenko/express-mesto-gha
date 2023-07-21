@@ -17,7 +17,7 @@ const login = (req, res) => {
 
   if (!email || !password) { return res.status(ERROR_BAD_REQUEST).send({ message: 'Email и пароль не могут быть пустыми' }); }
 
-  return User.findOne({ email })
+  return User.findOne({ email }).select('+password')
     .then((user) => {
       const token = jwt.sign({ id: user._id }, JWT_SECRET);
       res
