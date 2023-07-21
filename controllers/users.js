@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
-const Error = require('../errors/ErrorAPI');
+const ErrorAPI = require('../errors/ErrorAPI');
 
 const ERROR_BAD_REQUEST = 400;
 const ERROR_UNAUTHORIZED = 401;
@@ -21,13 +21,13 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw new Error('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
+    throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     User.findOne({ email }).select('+password')
       .then((user) => {
         bcrypt.compare(password, user.password, (err, isValidPassword) => {
           if (!isValidPassword) {
-            throw new Error('Email и пароль не могут быть пустыми', ERROR_UNAUTHORIZED);
+            throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_UNAUTHORIZED);
           } else {
             const token = jwt.sign({ id: user._id }, JWT_SECRET);
             res
@@ -41,7 +41,7 @@ const login = (req, res, next) => {
         });
       })
       .catch((error) => {
-        throw new Error('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
+        throw new ErrorAPI('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
       })
       .catch(next);
   }
@@ -52,14 +52,14 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   if (!email || !password) {
-    throw new Error('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
+    throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     const validEmail = validator.isEmail(email);
     bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
       User.findOne({ email })
         .then((user) => {
           if (user) {
-            throw new Error('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
+            throw new ErrorAPI('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
           } else if (validEmail === true) {
             User.create({
               name, about, avatar, email, password: hash,
@@ -73,18 +73,18 @@ const createUser = (req, res, next) => {
               })
               .catch((err) => {
                 if (err instanceof mongoose.Error.ValidationError) {
-                  throw new Error('Переданы некорректные данные', ERROR_BAD_REQUEST);
+                  throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
                 } else {
-                  throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
+                  throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
                 }
               });
           } else if (validEmail === false) {
-            throw new Error('Неверные email или пароль', ERROR_BAD_REQUEST);
+            throw new ErrorAPI('Неверные email или пароль', ERROR_BAD_REQUEST);
           }
         })
-        // .catch((err) => {
-        //   throw new Error('Произошла ошибка', ERROR_BAD_REQUEST);
-        // })
+        .catch((err) => {
+          throw new ErrorAPI('Произошла ошибка', ERROR_BAD_REQUEST);
+        })
         .catch(next);
     });
   }
@@ -98,7 +98,7 @@ const getUsers = (req, res, next) => {
         .send(users);
     })
     .catch(() => {
-      throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
+      throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
     })
     .catch(next);
 };
@@ -112,11 +112,11 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        throw new Error('Пользователь не найден', ERROR_NOT_FOUND);
+        throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
       } else if (err.name === 'CastError') {
-        throw new Error('Переданы некорректные данные', ERROR_BAD_REQUEST);
+        throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else {
-        throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
+        throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
       }
     })
     .catch(next);
@@ -131,11 +131,11 @@ const getAuthUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        throw new Error('Пользователь не найден', ERROR_NOT_FOUND);
+        throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
       } else if (err.name === 'CastError') {
-        throw new Error('Переданы некорректные данные', ERROR_BAD_REQUEST);
+        throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else {
-        throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
+        throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
       }
     })
     .catch(next);
@@ -158,11 +158,11 @@ const changeProfileData = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        throw new Error('Пользователь не найден', ERROR_NOT_FOUND);
+        throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
       } else if (err.message === 'NotValidId') {
-        throw new Error('Переданы некорректные данные', ERROR_BAD_REQUEST);
+        throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else {
-        throw new Error('Ошибка сервера', ERROR_INTERNAL_SERVER);
+        throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
       }
     })
     .catch(next);

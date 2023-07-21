@@ -28,7 +28,7 @@ app.use('/', router);
 
 // наш централизованный обработчик
 app.use((err, req, res, next) => {
-
+console.log(err.statusCode, { message: err.message })
   // if([400,401,403,409,500].includes(err.statusCode)){
   // res
   //   .status(err.statusCode)
