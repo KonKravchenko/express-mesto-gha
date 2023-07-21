@@ -28,7 +28,7 @@ const login = (req, res, next) => {
         bcrypt.compare(password, user.password, (err, isValidPassword) => {
           if (!isValidPassword) {
             res
-              .status(401)
+              .status(400)
               .send({ message: 'Неверный имя пользователя или пароль' });
             // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_UNAUTHORIZED);
           } else {
