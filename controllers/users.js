@@ -137,7 +137,7 @@ const getAuthUser = (req, res) => {
 
 const changeProfileData = (req, res) => {
   User.findByIdAndUpdate(
-    req.user._id,
+    req.user.id,
     req.body,
     {
       new: true,

@@ -9,8 +9,8 @@ const {
 // router.post('/', createUser);
 router.get('/', getUsers);
 router.get('/me', getAuthUser);
-router.get('/:id', getUser);
 router.patch('/me', changeProfileNameAbout);
+router.get('/:id', getUser);
 router.patch('/me/avatar', changeProfileAvatar);
 
 module.exports = router;

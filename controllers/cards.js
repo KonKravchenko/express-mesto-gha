@@ -7,7 +7,7 @@ const ERROR_INTERNAL_SERVER = 500;
 
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
-  const owner = req.user._id;
+  const owner = req.user.id;
 
   Card.create({ name, link, owner })
     .then((card) => {
@@ -43,7 +43,7 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { id } = req.user;
+  const { id } = req.params;
   Card.findByIdAndRemove(id)
     .orFail(new Error('NotValidId'))
     .then((card) => {
@@ -69,9 +69,10 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
+  console.log(req)
   Card.findByIdAndUpdate(
-    req.user.id,
-    { $addToSet: { likes: req.user._id } },
+    req.params.id,
+    { $addToSet: { likes: req.user.id } },
     { new: true },
   )
     .orFail(new Error('NotValidId'))
@@ -97,8 +98,8 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
-    req.user.id,
-    { $pull: { likes: req.user._id } },
+    req.params.id,
+    { $pull: { likes: req.user.id } },
     { new: true },
   )
     .orFail(new Error('NotValidId'))
