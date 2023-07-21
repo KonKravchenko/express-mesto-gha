@@ -21,14 +21,17 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
+    res
+      .status(ERROR_BAD_REQUEST)
+      .send({ message: 'Неверный имя пользователя или пароль' });
+    // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     User.findOne({ email }).select('+password')
       .then((user) => {
         bcrypt.compare(password, user.password, (err, isValidPassword) => {
           if (!isValidPassword) {
             res
-              .status(400)
+              .status(ERROR_UNAUTHORIZED)
               .send({ message: 'Неверный имя пользователя или пароль' });
             // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_UNAUTHORIZED);
           } else {
@@ -45,7 +48,7 @@ const login = (req, res, next) => {
       })
       .catch((error) => {
         res
-          .status(ERROR_BAD_REQUEST)
+          .status(401)
           .send({ message: 'Произошла ошибка авторизации' });
         // throw new ErrorAPI('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
       });
