@@ -47,10 +47,12 @@ const createUser = (req, res) => {
           User.create({
             name, about, avatar, email, password,
           })
-            .then((user) => {
+            .then((data) => {
               res
                 .status(201)
-                .send(user);
+                .send({
+                  name, about, avatar, email,
+                });
             })
             .catch((error) => {
               if (error instanceof mongoose.Error.ValidationError) {
