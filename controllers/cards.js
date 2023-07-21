@@ -43,7 +43,7 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user;
   Card.findByIdAndRemove(id)
     .orFail(new Error('NotValidId'))
     .then((card) => {
@@ -57,12 +57,10 @@ module.exports.deleteCard = (req, res) => {
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
       } else if (err.name === 'CastError') {
-        // console.log(err.name)
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Переданы некорректные данные' });
       } else {
-        // console.log(err)
         res
           .status(ERROR_INTERNAL_SERVER)
           .send({ message: 'Ошибка сервера' });
@@ -72,7 +70,7 @@ module.exports.deleteCard = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
-    req.params.id,
+    req.user.id,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
@@ -99,7 +97,7 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
-    req.params.id,
+    req.user.id,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
