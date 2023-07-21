@@ -203,16 +203,16 @@ const changeProfileData = (req, res, next) => {
         .send(user);
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        // res
-        //   .status(ERROR_BAD_REQUEST)
-        //   .send({ message: 'Переданы некорректные данные' });
-        throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
-      } else if (err.message === 'NotValidId') {
+      if (err.message === 'NotValidId') {
         // res
         //   .status(ERROR_NOT_FOUND)
         //   .send({ message: 'Пользователь не найден' });
         throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
+      } else if (err instanceof mongoose.Error.ValidationError) {
+        // res
+        //   .status(ERROR_BAD_REQUEST)
+        //   .send({ message: 'Переданы некорректные данные' });
+        throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
       } else {
         // res
         //   .status(ERROR_INTERNAL_SERVER)
