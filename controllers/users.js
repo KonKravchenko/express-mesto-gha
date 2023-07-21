@@ -26,7 +26,7 @@ const login = (req, res) => {
         bcrypt.compare(password, user.password, (err, isValidPassword) => {
           if (!isValidPassword) {
             res
-              .status(ERROR_BAD_REQUEST)
+              .status(401)
               .send({ message: 'Неверный имя пользователя или пароль' });
           } else {
             const token = jwt.sign({ id: user._id }, JWT_SECRET);

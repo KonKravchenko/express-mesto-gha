@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     // отправим ошибку если не  получилось
     res
-      .status(400)
+      .status(401)
       .send({ message: 'Необходима авторизация' });
   }
 
