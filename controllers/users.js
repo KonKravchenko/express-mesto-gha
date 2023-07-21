@@ -28,7 +28,7 @@ const login = (req, res) => {
         })
         .send({ id: user._id });
     })
-    .catch((error) => { res.status(401).send({ message: 'Произошла ошибка авторизации' }); });
+    .catch((error) => { res.status(ERROR_BAD_REQUEST).send({ message: 'Произошла ошибка авторизации' }); });
 };
 
 const createUser = (req, res) => {
