@@ -1,3 +1,4 @@
+/* eslint-disable */
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -23,7 +24,7 @@ app.use(auth);
 app.use('/', router);
 
 // обработчики ошибок
-app.use(errors()); // обработчик ошибок celebrate
+// app.use(errors()); // обработчик ошибок celebrate
 
 // наш централизованный обработчик
 app.use((err, req, res, next) => {
