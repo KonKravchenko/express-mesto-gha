@@ -48,7 +48,7 @@ const login = (req, res, next) => {
       })
       .catch((error) => {
         res
-          .status(401)
+          .status(ERROR_BAD_REQUEST)
           .send({ message: 'Произошла ошибка авторизации' });
         // throw new ErrorAPI('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
       });
@@ -74,7 +74,9 @@ const createUser = (req, res, next) => {
             res
               .status(409)
               .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
-            // throw new ErrorAPI('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
+            // throw new ErrorAPI(
+            // 'Пользователь с таким Email уже зарегестрирован',
+            // ERROR_CONFLICTING_REQUEST);
           } else if (validEmail === true) {
             User.create({
               name, about, avatar, email, password: hash,
