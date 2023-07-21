@@ -43,13 +43,28 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { id } = req.params;
-  Card.findByIdAndRemove(id)
+  const cardId = req.params.id;
+  const userId = req.user.id;
+  Card.findById(cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
-      res
-        .status(200)
-        .send({ data: card, message: 'Карточка удалена' });
+      if (card.owner.toString() === userId) {
+        Card.findByIdAndRemove(cardId)
+          .then((card) => {
+            res
+              .status(200)
+              .send({ data: card, message: 'Карточка удалена' });
+          })
+          .catch(() => {
+            res
+              .status(ERROR_INTERNAL_SERVER)
+              .send({ message: 'Ошибка сервера' });
+          });
+      } else {
+        res
+          .status(403)
+          .send({ message: 'У вас нет прав на удаление данной карточки' });
+      }
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
@@ -69,7 +84,6 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  console.log(req)
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user.id } },
