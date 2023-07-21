@@ -50,10 +50,10 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (card.owner.toString() === userId) {
         Card.findByIdAndRemove(cardId)
-          .then((card) => {
+          .then((data) => {
             res
               .status(200)
-              .send({ data: card, message: 'Карточка удалена' });
+              .send({ data, message: 'Карточка удалена' });
           })
           .catch(() => {
             res
