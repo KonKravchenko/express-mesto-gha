@@ -35,14 +35,15 @@ const createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!email || !password) { res.status(ERROR_BAD_REQUEST).send({ message: 'Email и пароль не могут быть пустыми' }); }
-  else {
+  if (!email || !password) {
+    res.status(ERROR_BAD_REQUEST).send({ message: 'Email и пароль не могут быть пустыми' });
+  } else {
     const validEmail = validator.isEmail(email);
     User.findOne({ email })
       .then((user) => {
-        if (user) { res.status(409).send({ message: 'Пользователь с таким Email уже зарегестрирован' }); }
-
-        else if (validEmail === true) {
+        if (user) {
+          res.status(409).send({ message: 'Пользователь с таким Email уже зарегестрирован' });
+        } else if (validEmail === true) {
           User.create({
             name, about, avatar, email, password,
           })
