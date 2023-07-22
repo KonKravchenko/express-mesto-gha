@@ -15,18 +15,6 @@ module.exports.createCard = (req, res, next) => {
         .status(201)
         .send({ data: card });
     })
-    // .catch((error) => {
-    //   if (error instanceof mongoose.Error.ValidationError) {
-    //     res
-    //       .status(ERROR_BAD_REQUEST)
-    //       .send({ message: 'Переданы некорректные данные' });
-    //     return;
-    //   }
-
-    //   res
-    //     .status(ERROR_INTERNAL_SERVER)
-    //     .send({ message: 'Ошибка сервера' });
-    // });
     .catch(next);
 };
 
@@ -36,15 +24,10 @@ module.exports.getCards = (req, res, next) => {
     .then((card) => {
       res.send({ data: card });
     })
-    // .catch(() => {
-    //   res
-    //     .status(ERROR_INTERNAL_SERVER)
-    //     .send({ message: 'Ошибка сервера' });
-    // });
     .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const cardId = req.params.id;
   const userId = req.user.id;
   Card.findById(cardId)
@@ -57,32 +40,34 @@ module.exports.deleteCard = (req, res) => {
               .status(200)
               .send({ data, message: 'Карточка удалена' });
           })
-          .catch(() => {
-            res
-              .status(ERROR_INTERNAL_SERVER)
-              .send({ message: 'Ошибка сервера' });
-          });
+          // .catch(() => {
+          //   res
+          //     .status(ERROR_INTERNAL_SERVER)
+          //     .send({ message: 'Ошибка сервера' });
+          // });
+          .catch(next);
       } else {
         res
           .status(403)
           .send({ message: 'У вас нет прав на удаление данной карточки' });
       }
     })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Карточка не найдена' });
-      } else if (err.name === 'CastError') {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-      } else {
-        res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка сервера' });
-      }
-    });
+    // .catch((err) => {
+    //   if (err.message === 'NotValidId') {
+    //     res
+    //       .status(ERROR_NOT_FOUND)
+    //       .send({ message: 'Карточка не найдена' });
+    //   } else if (err.name === 'CastError') {
+    //     res
+    //       .status(ERROR_BAD_REQUEST)
+    //       .send({ message: 'Переданы некорректные данные' });
+    //   } else {
+    //     res
+    //       .status(ERROR_INTERNAL_SERVER)
+    //       .send({ message: 'Ошибка сервера' });
+    //   }
+    // });
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res) => {
