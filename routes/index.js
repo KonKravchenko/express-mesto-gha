@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 const userRoutes = require('./users');
 const cardRoutes = require('./cards');
 const NotFoundError = require('../errors/not-found-err');
+const auth = require('../middlewares/auth');
 
 const {
   login, createUser,
@@ -29,6 +30,7 @@ router.post('/signin', celebrate({
     .unknown(true),
 }), login);
 
+router.use(auth);
 router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
 router.use('*', (req, res, next) => {

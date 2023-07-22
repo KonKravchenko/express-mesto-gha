@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 
 
-const auth = require('./middlewares/auth');
+// const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error-handler');
 
 const app = express();
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 
 
 
-app.use(auth);
+// app.use(auth);
 app.use('/', router);
 
 
