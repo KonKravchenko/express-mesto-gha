@@ -23,7 +23,7 @@ const login = (req, res, next) => {
   if (!email || !password) {
     res
       .status(ERROR_BAD_REQUEST)
-      .send({ message: 'Неверный имя пользователя или пароль' });
+      .send({ message: 'Email и пароль не могут быть пустыми' });
     // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     User.findOne({ email }).select('+password')
@@ -33,7 +33,7 @@ const login = (req, res, next) => {
             res
               .status(ERROR_UNAUTHORIZED)
               .send({ message: 'Неверный имя пользователя или пароль' });
-            // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_UNAUTHORIZED);
+            // throw new ErrorAPI('Неверный имя пользователя или пароль', ERROR_UNAUTHORIZED);
           } else {
             const token = jwt.sign({ id: user._id }, JWT_SECRET);
             res
@@ -51,8 +51,8 @@ const login = (req, res, next) => {
           .status(ERROR_BAD_REQUEST)
           .send({ message: 'Произошла ошибка авторизации' });
         // throw new ErrorAPI('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
-      });
-    // .catch(next);
+      })
+      .catch(next);
   }
 };
 
@@ -61,10 +61,10 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   if (!email || !password) {
-    res
-      .status(ERROR_BAD_REQUEST)
-      .send({ message: 'Email и пароль не могут быть пустыми' });
-    // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
+    // res
+    //   .status(ERROR_BAD_REQUEST)
+    //   .send({ message: 'Email и пароль не могут быть пустыми' });
+    throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   } else {
     const validEmail = validator.isEmail(email);
     bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
@@ -100,8 +100,8 @@ const createUser = (req, res, next) => {
                     .send({ message: 'Ошибка сервера' });
                   // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
                 }
-              })
-              .catch(next);
+              });
+            // .catch(next);
           } else if (validEmail === false) {
             res
               .status(ERROR_BAD_REQUEST)
