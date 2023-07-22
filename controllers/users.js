@@ -155,7 +155,7 @@ const changeProfileData = (req, res, next) => {
     req.body,
     {
       new: true,
-      runValidators: true,
+      // runValidators: true,
     },
   )
     // .orFail(new Error('NotValidId'))
