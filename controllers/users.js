@@ -100,8 +100,8 @@ const createUser = (req, res, next) => {
                     .send({ message: 'Ошибка сервера' });
                   // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
                 }
-              });
-            // .catch(next);
+              })
+              .catch(next);
           } else if (validEmail === false) {
             res
               .status(ERROR_BAD_REQUEST)
@@ -114,8 +114,8 @@ const createUser = (req, res, next) => {
             .status(400)
             .send({ message: 'Произошла ошибка' });
           // throw new ErrorAPI('Произошла ошибка', ERROR_BAD_REQUEST);
-        });
-      // .catch(next);
+        })
+        .catch(next);
     });
   }
 };
