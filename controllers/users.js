@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
+const UnauthorizedError = require('../errors/unauthorized-err');
+const NotFoundError = require('../errors/not-found-err');
+const ConflictingRequestError = require('../errors/conflicting-request-err');
 
 const ERROR_UNAUTHORIZED = 401;
 const ERROR_NOT_FOUND = 404;
@@ -19,9 +22,10 @@ const login = (req, res, next) => {
     .then((user) => {
       bcrypt.compare(password, user.password, (err, isValidPassword) => {
         if (!isValidPassword) {
-          res
-            .status(ERROR_UNAUTHORIZED)
-            .send({ message: 'Неверный имя пользователя или пароль' });
+          // res
+          //   .status(ERROR_UNAUTHORIZED)
+          //   .send({ message: 'Неверный имя пользователя или пароль' });
+          throw new UnauthorizedError('Неверный имя пользователя или пароль');
         } else {
           const token = jwt.sign({ id: user._id }, JWT_SECRET);
           res
@@ -35,9 +39,10 @@ const login = (req, res, next) => {
       });
     })
     .catch((error) => {
-      res
-        .status(ERROR_UNAUTHORIZED)
-        .send({ message: 'Произошла ошибка авторизации' });
+      // res
+      //   .status(ERROR_UNAUTHORIZED)
+      //   .send({ message: 'Произошла ошибка авторизации' });
+      throw new UnauthorizedError('Неверный имя пользователя или пароль');
     })
     .catch(next);
 };
@@ -51,10 +56,11 @@ const createUser = (req, res, next) => {
     User.findOne({ email })
       .then((user) => {
         if (user) {
-          res
-            .status(ERROR_CONFLICTING_REQUEST)
-            .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
-          return;
+          // res
+          //   .status(ERROR_CONFLICTING_REQUEST)
+          //   .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
+          // return;
+          throw new ConflictingRequestError('Пользователь с таким Email уже зарегестрирован');
         }
         User.create({
           name, about, avatar, email, password: hash,
@@ -91,9 +97,10 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь не найден' });
+        // res
+        //   .status(ERROR_NOT_FOUND)
+        //   .send({ message: 'Пользователь не найден' });
+        throw new NotFoundError('Пользователь не найден');
       }
     })
     .catch(next);
