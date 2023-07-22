@@ -20,40 +20,40 @@ const JWT_SECRET = 'somethingverysecret';
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    res
-      .status(ERROR_BAD_REQUEST)
-      .send({ message: 'Email и пароль не могут быть пустыми' });
-    // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
-  } else {
-    User.findOne({ email }).select('+password')
-      .then((user) => {
-        bcrypt.compare(password, user.password, (err, isValidPassword) => {
-          if (!isValidPassword) {
-            res
-              .status(ERROR_UNAUTHORIZED)
-              .send({ message: 'Неверный имя пользователя или пароль' });
-            // throw new ErrorAPI('Неверный имя пользователя или пароль', ERROR_UNAUTHORIZED);
-          } else {
-            const token = jwt.sign({ id: user._id }, JWT_SECRET);
-            res
-              .cookie('jwt', token, {
-                maxAge: 3600000 * 24 * 7,
-                httpOnly: true,
-                sameSite: true,
-              })
-              .send({ id: user._id });
-          }
-        });
-      })
-      .catch((error) => {
-        res
-          .status(ERROR_UNAUTHORIZED)
-          .send({ message: 'Произошла ошибка авторизации' });
-        // throw new ErrorAPI('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
-      })
-      .catch(next);
-  }
+  // if (!email || !password) {
+  //   res
+  //     .status(ERROR_BAD_REQUEST)
+  //     .send({ message: 'Email и пароль не могут быть пустыми' });
+  //   // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
+  // } else {
+  User.findOne({ email }).select('+password')
+    .then((user) => {
+      bcrypt.compare(password, user.password, (err, isValidPassword) => {
+        if (!isValidPassword) {
+          res
+            .status(ERROR_UNAUTHORIZED)
+            .send({ message: 'Неверный имя пользователя или пароль' });
+          // throw new ErrorAPI('Неверный имя пользователя или пароль', ERROR_UNAUTHORIZED);
+        } else {
+          const token = jwt.sign({ id: user._id }, JWT_SECRET);
+          res
+            .cookie('jwt', token, {
+              maxAge: 3600000 * 24 * 7,
+              httpOnly: true,
+              sameSite: true,
+            })
+            .send({ id: user._id });
+        }
+      });
+    })
+    // .catch((error) => {
+    //   res
+    //     .status(ERROR_UNAUTHORIZED)
+    //     .send({ message: 'Произошла ошибка авторизации' });
+    //   // throw new ErrorAPI('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
+    // })
+    .catch(next);
+  // }
 };
 // const createUser = (req, res, next) => {
 //   const { name, about, avatar, email, password } = req.body;
@@ -85,16 +85,15 @@ const createUser = (req, res, next) => {
   //   //   .send({ message: 'Email и пароль не могут быть пустыми' });
   //   throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
   // } else {
-  const validEmail = validator.isEmail(email);
+  // const validEmail = validator.isEmail(email);
   bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
     User.findOne({ email })
       .then((user) => {
         if (user) {
           res
-            .status(409)
+            .status(ERROR_CONFLICTING_REQUEST)
             .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
-            return;
-          // throw new ErrorAPI('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
+          return;
         }
         User.create({
           name, about, avatar, email, password: hash,
