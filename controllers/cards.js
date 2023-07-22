@@ -30,17 +30,18 @@ module.exports.createCard = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate('owner')
     .then((card) => {
       res.send({ data: card });
     })
-    .catch(() => {
-      res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
-    });
+    // .catch(() => {
+    //   res
+    //     .status(ERROR_INTERNAL_SERVER)
+    //     .send({ message: 'Ошибка сервера' });
+    // });
+    .catch(next);
 };
 
 module.exports.deleteCard = (req, res) => {
