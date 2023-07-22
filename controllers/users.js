@@ -1,17 +1,12 @@
 /* eslint-disable no-unused-vars */
-const mongoose = require('mongoose');
-const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
-const ErrorAPI = require('../errors/ErrorAPI');
 
-const ERROR_BAD_REQUEST = 400;
 const ERROR_UNAUTHORIZED = 401;
 const ERROR_NOT_FOUND = 404;
 const ERROR_CONFLICTING_REQUEST = 409;
-const ERROR_INTERNAL_SERVER = 500;
 
 const SALT_ROUNDS = 10;
 

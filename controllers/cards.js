@@ -1,9 +1,6 @@
-// const mongoose = require('mongoose');
 const Card = require('../models/card');
 
-// const ERROR_BAD_REQUEST = 400;
 const ERROR_NOT_FOUND = 404;
-// const ERROR_INTERNAL_SERVER = 500;
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -40,11 +37,6 @@ module.exports.deleteCard = (req, res, next) => {
               .status(200)
               .send({ data, message: 'Карточка удалена' });
           })
-          // .catch(() => {
-          //   res
-          //     .status(ERROR_INTERNAL_SERVER)
-          //     .send({ message: 'Ошибка сервера' });
-          // });
           .catch(next);
       } else {
         res
@@ -59,16 +51,6 @@ module.exports.deleteCard = (req, res, next) => {
           .send({ message: 'Карточка не найдена' });
       }
     })
-    // else if (err.name === 'CastError') {
-    //     res
-    //       .status(ERROR_BAD_REQUEST)
-    //       .send({ message: 'Переданы некорректные данные' });
-    //   } else {
-    //     res
-    //       .status(ERROR_INTERNAL_SERVER)
-    //       .send({ message: 'Ошибка сервера' });
-    //   }
-    // });
     .catch(next);
 };
 
@@ -86,17 +68,6 @@ module.exports.likeCard = (req, res, next) => {
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
       }
-      // else if (err.name === 'CastError') {
-      //   // console.log(err.name)
-      //   res
-      //     .status(ERROR_BAD_REQUEST)
-      //     .send({ message: 'Переданы некорректные данные' });
-      // } else {
-      //   // console.log(err)
-      //   res
-      //     .status(ERROR_INTERNAL_SERVER)
-      //     .send({ message: 'Ошибка сервера' });
-      // }
     })
     .catch(next);
 };
@@ -115,17 +86,6 @@ module.exports.dislikeCard = (req, res, next) => {
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
       }
-      // else if (err.name === 'CastError') {
-      //   // console.log(err.name)
-      //   res
-      //     .status(ERROR_BAD_REQUEST)
-      //     .send({ message: 'Переданы некорректные данные' });
-      // } else {
-      //   // console.log(err)
-      //   res
-      //     .status(ERROR_INTERNAL_SERVER)
-      //     .send({ message: 'Ошибка сервера' });
-      // }
     })
     .catch(next);
 };

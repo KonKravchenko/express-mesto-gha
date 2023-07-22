@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
-// const ErrorAPI = require('./errors/ErrorAPI');
 
 
 const auth = require('./middlewares/auth');
