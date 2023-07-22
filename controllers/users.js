@@ -88,19 +88,19 @@ const createUser = (req, res, next) => {
                     name, about, avatar, email,
                   });
               })
-              .catch((err) => {
-                if (err instanceof mongoose.Error.ValidationError) {
-                  res
-                    .status(ERROR_BAD_REQUEST)
-                    .send({ message: 'Переданы некорректные данные' });
-                  // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
-                } else {
-                  res
-                    .status(ERROR_INTERNAL_SERVER)
-                    .send({ message: 'Ошибка сервера' });
-                  // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
-                }
-              })
+              // .catch((err) => {
+              //   if (err instanceof mongoose.Error.ValidationError) {
+              //     res
+              //       .status(ERROR_BAD_REQUEST)
+              //       .send({ message: 'Переданы некорректные данные' });
+              //     // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
+              //   } else {
+              //     res
+              //       .status(ERROR_INTERNAL_SERVER)
+              //       .send({ message: 'Ошибка сервера' });
+              //     // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
+              //   }
+              // })
               .catch(next);
           } else if (validEmail === false) {
             res
