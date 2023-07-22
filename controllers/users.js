@@ -87,25 +87,27 @@ const createUser = (req, res, next) => {
   // } else {
   const validEmail = validator.isEmail(email);
   bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
-    // User.findOne({ email })
-    //   .then((user) => {
-    //     if (user) {
-    //       res
-    //         .status(409)
-    //         .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
-    //       // throw new ErrorAPI(
-    //       // 'Пользователь с таким Email уже зарегестрирован',
-    //       // ERROR_CONFLICTING_REQUEST);
-    //     } else if (validEmail === true) {
-    User.create({
-      name, about, avatar, email, password: hash,
-    })
-      .then((data) => {
-        res
-          .status(201)
-          .send({
-            name, about, avatar, email,
-          });
+    User.findOne({ email })
+      .then((user) => {
+        if (user) {
+          res
+            .status(409)
+            .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
+          // throw new ErrorAPI(
+          // 'Пользователь с таким Email уже зарегестрирован',
+          // ERROR_CONFLICTING_REQUEST);
+        } else if (validEmail === true) {
+          User.create({
+            name, about, avatar, email, password: hash,
+          })
+            .then((data) => {
+              res
+                .status(201)
+                .send({
+                  name, about, avatar, email,
+                });
+            });
+        }
       })
       //       .catch((err) => {
       //         if (err instanceof mongoose.Error.ValidationError) {
