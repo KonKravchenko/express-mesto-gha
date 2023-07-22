@@ -96,56 +96,56 @@ const getUsers = (req, res, next) => {
 const getUser = (req, res, next) => {
   const { id } = req.params;
   User.findById(id)
-    .orFail(new Error('NotValidId'))
+    // .orFail(new Error('NotValidId'))
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь не найден' });
-        // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
-      } else if (err.name === 'CastError') {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-        // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
-      } else {
-        res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка сервера' });
-        // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
-      }
-    });
-  // .catch(next);
+    // .catch((err) => {
+    //   if (err.message === 'NotValidId') {
+    //     res
+    //       .status(ERROR_NOT_FOUND)
+    //       .send({ message: 'Пользователь не найден' });
+    //     // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
+    //   } else if (err.name === 'CastError') {
+    //     res
+    //       .status(ERROR_BAD_REQUEST)
+    //       .send({ message: 'Переданы некорректные данные' });
+    //     // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
+    //   } else {
+    //     res
+    //       .status(ERROR_INTERNAL_SERVER)
+    //       .send({ message: 'Ошибка сервера' });
+    //     // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
+    //   }
+    // });
+    .catch(next);
 };
 
 const getAuthUser = (req, res, next) => {
   const { id } = req.user;
   User.findById(id)
-    .orFail(new Error('NotValidId'))
+    // .orFail(new Error('NotValidId'))
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь не найден' });
-        // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
-      } else if (err.name === 'CastError') {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-        // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
-      } else {
-        res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка сервера' });
-        // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
-      }
-    })
+    // .catch((err) => {
+    //   if (err.message === 'NotValidId') {
+    //     res
+    //       .status(ERROR_NOT_FOUND)
+    //       .send({ message: 'Пользователь не найден' });
+    //     // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
+    //   } else if (err.name === 'CastError') {
+    //     res
+    //       .status(ERROR_BAD_REQUEST)
+    //       .send({ message: 'Переданы некорректные данные' });
+    //     // throw new ErrorAPI('Переданы некорректные данные', ERROR_BAD_REQUEST);
+    //   } else {
+    //     res
+    //       .status(ERROR_INTERNAL_SERVER)
+    //       .send({ message: 'Ошибка сервера' });
+    //     // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
+    //   }
+    // })
     .catch(next);
 };
 
