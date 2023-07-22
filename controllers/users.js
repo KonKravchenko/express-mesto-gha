@@ -90,12 +90,11 @@ const createUser = (req, res, next) => {
     User.findOne({ email })
       .then((user) => {
         if (user) {
-          res
-            .status(409)
-            .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
-          // throw new ErrorAPI(
-          // 'Пользователь с таким Email уже зарегестрирован',
-          // ERROR_CONFLICTING_REQUEST);
+          // res
+          //   .status(409)
+          //   .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
+          //   return;
+          throw new ErrorAPI('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
         } else if (validEmail === true) {
           User.create({
             name, about, avatar, email, password: hash,
