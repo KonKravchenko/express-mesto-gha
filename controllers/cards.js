@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const Card = require('../models/card');
 
 const ERROR_BAD_REQUEST = 400;
 const ERROR_NOT_FOUND = 404;
 const ERROR_INTERNAL_SERVER = 500;
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user.id;
 
@@ -15,18 +15,19 @@ module.exports.createCard = (req, res) => {
         .status(201)
         .send({ data: card });
     })
-    .catch((error) => {
-      if (error instanceof mongoose.Error.ValidationError) {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-        return;
-      }
+    // .catch((error) => {
+    //   if (error instanceof mongoose.Error.ValidationError) {
+    //     res
+    //       .status(ERROR_BAD_REQUEST)
+    //       .send({ message: 'Переданы некорректные данные' });
+    //     return;
+    //   }
 
-      res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: 'Ошибка сервера' });
-    });
+    //   res
+    //     .status(ERROR_INTERNAL_SERVER)
+    //     .send({ message: 'Ошибка сервера' });
+    // });
+    .catch(next);
 };
 
 module.exports.getCards = (req, res) => {
