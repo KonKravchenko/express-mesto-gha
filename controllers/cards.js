@@ -34,30 +34,17 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (card.owner.toString() === userId) {
-        Card.findByIdAndRemove(cardId)
-          .then((data) => {
-            res
-              .status(200)
-              .send({ data, message: 'Карточка удалена' });
-          })
-          .catch(next);
+      if (card.owner.toString() === !userId) {
+        throw new ForbidenError('У вас нет прав на удаление данной карточки');
       }
-      throw new ForbidenError('У вас нет прав на удаление данной карточки');
+      Card.findByIdAndRemove(cardId)
+        .then((data) => {
+          res
+            .status(200)
+            .send({ data, message: 'Карточка удалена' });
+        })
+        .catch(next);
     })
-
-    // {
-    //   throw new ForbidenError('У вас нет прав на удаление данной карточки');
-    // })
-    // .catch(next);
-    // })
-    // else {
-    // res
-    //   .status(403)
-    //   .send({ message: 'У вас нет прав на удаление данной карточки' });
-    // throw new ForbidenError('У вас нет прав на удаление данной карточки');
-    // }
-    // })
     .catch((err) => {
       if (err.message === 'NotValidId') {
         // res
@@ -68,6 +55,30 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch(next);
 };
+// })
+
+// {
+//   throw new ForbidenError('У вас нет прав на удаление данной карточки');
+// })
+// .catch(next);
+// })
+// else {
+// res
+//   .status(403)
+//   .send({ message: 'У вас нет прав на удаление данной карточки' });
+// throw new ForbidenError('У вас нет прав на удаление данной карточки');
+// }
+// })
+//     .catch((err) => {
+//       if (err.message === 'NotValidId') {
+//         // res
+//         //   .status(ERROR_NOT_FOUND)
+//         //   .send({ message: 'Карточка не найдена' });
+//         throw new NotFoundError('Карточка не найдена');
+//       }
+//     })
+//     .catch(next);
+// };
 
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
