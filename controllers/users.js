@@ -181,8 +181,8 @@ const changeProfileData = (req, res, next) => {
           .send({ message: 'Ошибка сервера' });
         // throw new ErrorAPI('Ошибка сервера', ERROR_INTERNAL_SERVER);
       }
-    });
-  // .catch(next);
+    })
+    .catch(next);
 };
 
 const changeProfileNameAbout = (req, res) => {
