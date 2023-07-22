@@ -48,7 +48,7 @@ const login = (req, res, next) => {
       })
       .catch((error) => {
         res
-          .status(ERROR_BAD_REQUEST)
+          .status(ERROR_UNAUTHORIZED)
           .send({ message: 'Произошла ошибка авторизации' });
         // throw new ErrorAPI('Произошла ошибка авторизации', ERROR_BAD_REQUEST);
       })
