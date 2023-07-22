@@ -158,21 +158,21 @@ const changeProfileData = (req, res, next) => {
       runValidators: true,
     },
   )
-    .orFail(new Error('NotValidId'))
+    // .orFail(new Error('NotValidId'))
     .then((user) => {
       res
         .status(200)
         .send(user);
     })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        return res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Пользователь не найден' });
+    // .catch((err) => {
+    //   if (err.message === 'NotValidId') {
+    //     return res
+    //       .status(ERROR_NOT_FOUND)
+    //       .send({ message: 'Пользователь не найден' });
 
-        // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
-      }
-    })
+    //     // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
+    //   }
+    // })
     //  else if (err instanceof mongoose.Error.ValidationError) {
     //     res
     //       .status(ERROR_BAD_REQUEST)
