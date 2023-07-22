@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 // const UnauthorizedError = require('../errors/unauthorized-err');
-// const ForbidenError = require('../errors/forbiden-err');
+const ForbidenError = require('../errors/forbiden-err');
 const NotFoundError = require('../errors/not-found-err');
 // const ConflictingRequestError = require('../errors/conflicting-request-err');
 
@@ -40,6 +40,9 @@ module.exports.deleteCard = (req, res, next) => {
             res
               .status(200)
               .send({ data, message: 'Карточка удалена' });
+          })
+          .catch((err) => {
+            throw new ForbidenError('У вас нет прав на удаление данной карточки');
           })
           .catch(next);
       }
