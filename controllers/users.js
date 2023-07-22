@@ -96,17 +96,27 @@ const getUsers = (req, res, next) => {
 const getUser = (req, res, next) => {
   const { id } = req.params;
   User.findById(id)
-    // .orFail(new Error('NotValidId'))
+    .orFail(new Error('NotValidId'))
+    // if (err.message === 'NotValidId') {
+    //   res
+    //     .status(ERROR_NOT_FOUND)
+    //     .send({ message: 'Пользователь не найден' });
+    //   return;
+    //   // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
+    // }
+    // User.findById(id)
     .then((user) => {
       res.status(200).send(user);
     })
-    // .catch((err) => {
-    //   if (err.message === 'NotValidId') {
-    //     res
-    //       .status(ERROR_NOT_FOUND)
-    //       .send({ message: 'Пользователь не найден' });
-    //     // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
-    //   } else if (err.name === 'CastError') {
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Пользователь не найден' });
+        // throw new ErrorAPI('Пользователь не найден', ERROR_NOT_FOUND);
+      }
+    })
+    // else if (err.name === 'CastError') {
     //     res
     //       .status(ERROR_BAD_REQUEST)
     //       .send({ message: 'Переданы некорректные данные' });
