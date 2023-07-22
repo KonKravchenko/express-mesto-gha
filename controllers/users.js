@@ -95,18 +95,18 @@ const createUser = (req, res, next) => {
           //   .send({ message: 'Пользователь с таким Email уже зарегестрирован' });
           //   return;
           throw new ErrorAPI('Пользователь с таким Email уже зарегестрирован', ERROR_CONFLICTING_REQUEST);
-        } else if (validEmail === true) {
-          User.create({
-            name, about, avatar, email, password: hash,
-          })
-            .then((data) => {
-              res
-                .status(201)
-                .send({
-                  name, about, avatar, email,
-                });
-            });
         }
+        User.create({
+          name, about, avatar, email, password: hash,
+        })
+          .then((data) => {
+            res
+              .status(201)
+              .send({
+                name, about, avatar, email,
+              });
+          })
+          .catch(next);
       })
       //       .catch((err) => {
       //         if (err instanceof mongoose.Error.ValidationError) {
