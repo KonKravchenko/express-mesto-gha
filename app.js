@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 
 const auth = require('./middlewares/auth');
@@ -17,39 +18,33 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(bodyParser.json());
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    passwrd: Joi.string().required().min(8)
+  })
+    .unknown(true),
+}), createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    passwrd: Joi.string().required().min(8)
+  })
+    .unknown(true),
+}), login);
 
 app.use(auth);
 app.use('/', router);
 
 // обработчики ошибок
-// app.use(errors()); // обработчик ошибок celebrate
+app.use(errors()); // обработчик ошибок celebrate
 
-// наш централизованный обработчик
+
 app.use((err, req, res, next) => {
   console.log(err.statusCode, { message: err.message })
-  // if([400,401,403,409,500].includes(err.statusCode)){
-  // res
-  //   .status(err.statusCode)
-  //   .send({ message: err.message });
-  // } else {
-  //   next(err)
-  // }
   res
     .status(err.statusCode)
     .send({ message: err.message });
-
-  // const { statusCode = 500, message } = err;
-
-  // res
-  //   .status(statusCode)
-  //   .send({
-  //     // проверяем статус и выставляем сообщение в зависимости от него
-  //     message: statusCode === 500
-  //       ? 'На сервере произошла ошибка'
-  //       : message
-  //   });
 });
 
 app.listen(3000, () => {
