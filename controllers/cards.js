@@ -34,25 +34,25 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (card.owner.toString() === userId) {
-        Card.findByIdAndRemove(cardId)
-          .then((data) => {
-            res
-              .status(200)
-              .send({ data, message: 'Карточка удалена' });
-          })
-          .catch((err) => {
-            throw new ForbidenError('У вас нет прав на удаление данной карточки');
-          })
-          .catch(next);
-      }
-      // else {
-      // res
-      //   .status(403)
-      //   .send({ message: 'У вас нет прав на удаление данной карточки' });
-      // throw new ForbidenError('У вас нет прав на удаление данной карточки');
-      // }
+      // if (card.owner.toString() === userId) {
+      Card.findByIdAndRemove(cardId)
+        .then((data) => {
+          res
+            .status(200)
+            .send({ data, message: 'Карточка удалена' });
+        })
+        // .catch((err) => {
+        //   throw new ForbidenError('У вас нет прав на удаление данной карточки');
+        // })
+        .catch(next);
     })
+    // else {
+    // res
+    //   .status(403)
+    //   .send({ message: 'У вас нет прав на удаление данной карточки' });
+    // throw new ForbidenError('У вас нет прав на удаление данной карточки');
+    // }
+    // })
     .catch((err) => {
       if (err.message === 'NotValidId') {
         // res
