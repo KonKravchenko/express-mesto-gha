@@ -1,6 +1,10 @@
 const Card = require('../models/card');
+// const UnauthorizedError = require('../errors/unauthorized-err');
+const ForbidenError = require('../errors/forbiden-err');
+const NotFoundError = require('../errors/not-found-err');
+// const ConflictingRequestError = require('../errors/conflicting-request-err');
 
-const ERROR_NOT_FOUND = 404;
+// const ERROR_NOT_FOUND = 404;
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -39,16 +43,18 @@ module.exports.deleteCard = (req, res, next) => {
           })
           .catch(next);
       } else {
-        res
-          .status(403)
-          .send({ message: 'У вас нет прав на удаление данной карточки' });
+        // res
+        //   .status(403)
+        //   .send({ message: 'У вас нет прав на удаление данной карточки' });
+        throw new ForbidenError('У вас нет прав на удаление данной карточки');
       }
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Карточка не найдена' });
+        // res
+        //   .status(ERROR_NOT_FOUND)
+        //   .send({ message: 'Карточка не найдена' });
+        throw new NotFoundError('Карточка не найдена');
       }
     })
     .catch(next);
@@ -64,9 +70,10 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Карточка не найдена' });
+        // res
+        //   .status(ERROR_NOT_FOUND)
+        //   .send({ message: 'Карточка не найдена' });
+        throw new NotFoundError('Карточка не найдена');
       }
     })
     .catch(next);
@@ -82,9 +89,10 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: 'Карточка не найдена' });
+        // res
+        //   .status(ERROR_NOT_FOUND)
+        //   .send({ message: 'Карточка не найдена' });
+        throw new NotFoundError('Карточка не найдена');
       }
     })
     .catch(next);
