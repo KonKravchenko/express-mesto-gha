@@ -58,6 +58,7 @@ const login = (req, res, next) => {
 const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   if (!email || !password) {
+    // throw new ErrorAPI('Email и пароль не могут быть пустыми', ERROR_BAD_REQUEST);
     res.status(400).send({ message: 'Email и пароль не могут быть пустыми' });
     return;
   }
@@ -72,7 +73,7 @@ const createUser = (req, res, next) => {
     .then((user) => {
       res.status(201).send(user);
     })
-    .catch(next)
+    .catch(next);
 };
 // const createUser = (req, res, next) => {
 //   const {
