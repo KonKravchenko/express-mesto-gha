@@ -21,14 +21,16 @@ app.use(bodyParser.json());
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    passwrd: Joi.string().required().min(8)
+    passwrd: Joi.string().required().min(8),
+    name: Joi.string().required().min(2).max(30)
   })
     .unknown(true),
 }), createUser);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    passwrd: Joi.string().required().min(8)
+    passwrd: Joi.string().required().min(8),
+    name: Joi.string().required().min(2).max(30)
   })
     .unknown(true),
 }), login);
