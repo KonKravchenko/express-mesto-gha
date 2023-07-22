@@ -1,9 +1,9 @@
 // const mongoose = require('mongoose');
 const Card = require('../models/card');
 
-const ERROR_BAD_REQUEST = 400;
+// const ERROR_BAD_REQUEST = 400;
 const ERROR_NOT_FOUND = 404;
-const ERROR_INTERNAL_SERVER = 500;
+// const ERROR_INTERNAL_SERVER = 500;
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -52,12 +52,14 @@ module.exports.deleteCard = (req, res, next) => {
           .send({ message: 'У вас нет прав на удаление данной карточки' });
       }
     })
-    // .catch((err) => {
-    //   if (err.message === 'NotValidId') {
-    //     res
-    //       .status(ERROR_NOT_FOUND)
-    //       .send({ message: 'Карточка не найдена' });
-    //   } else if (err.name === 'CastError') {
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: 'Карточка не найдена' });
+      }
+    })
+    // else if (err.name === 'CastError') {
     //     res
     //       .status(ERROR_BAD_REQUEST)
     //       .send({ message: 'Переданы некорректные данные' });
@@ -70,7 +72,7 @@ module.exports.deleteCard = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user.id } },
@@ -83,21 +85,23 @@ module.exports.likeCard = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
-      } else if (err.name === 'CastError') {
-        // console.log(err.name)
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-      } else {
-        // console.log(err)
-        res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка сервера' });
       }
-    });
+      // else if (err.name === 'CastError') {
+      //   // console.log(err.name)
+      //   res
+      //     .status(ERROR_BAD_REQUEST)
+      //     .send({ message: 'Переданы некорректные данные' });
+      // } else {
+      //   // console.log(err)
+      //   res
+      //     .status(ERROR_INTERNAL_SERVER)
+      //     .send({ message: 'Ошибка сервера' });
+      // }
+    })
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user.id } },
@@ -110,16 +114,18 @@ module.exports.dislikeCard = (req, res) => {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: 'Карточка не найдена' });
-      } else if (err.name === 'CastError') {
-        // console.log(err.name)
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: 'Переданы некорректные данные' });
-      } else {
-        // console.log(err)
-        res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка сервера' });
       }
-    });
+      // else if (err.name === 'CastError') {
+      //   // console.log(err.name)
+      //   res
+      //     .status(ERROR_BAD_REQUEST)
+      //     .send({ message: 'Переданы некорректные данные' });
+      // } else {
+      //   // console.log(err)
+      //   res
+      //     .status(ERROR_INTERNAL_SERVER)
+      //     .send({ message: 'Ошибка сервера' });
+      // }
+    })
+    .catch(next);
 };
