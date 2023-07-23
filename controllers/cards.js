@@ -32,27 +32,27 @@ module.exports.deleteCard = (req, res, next) => {
   const cardId = req.params.id;
   const userId = req.user.id;
   Card.findById(cardId)
-    .orFail(new Error('NotValidId'))
+    // .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (card.owner.toString() !== userId) {
-        throw new ForbidenError('У вас нет прав на удаление данной карточки');
+      if (card.owner.toString() === userId) {
+        Card.findByIdAndRemove(cardId)
+          .then((data) => {
+            res
+              .status(200)
+              .send({ data, message: 'Карточка удалена' });
+          })
+          .catch(next);
       }
-      Card.findByIdAndRemove(cardId)
-        .then((data) => {
-          res
-            .status(200)
-            .send({ data, message: 'Карточка удалена' });
-        })
-        .catch(next);
+      throw new ForbidenError('У вас нет прав на удаление данной карточки');
     })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        // res
-        //   .status(ERROR_NOT_FOUND)
-        //   .send({ message: 'Карточка не найдена' });
-        throw new NotFoundError('Карточка не найдена');
-      }
-    })
+    // .catch((err) => {
+    //   if (err.message === 'NotValidId') {
+    //     // res
+    //     //   .status(ERROR_NOT_FOUND)
+    //     //   .send({ message: 'Карточка не найдена' });
+    //     throw new NotFoundError('Карточка не найдена');
+    //   }
+    // })
     .catch(next);
 };
 // })
