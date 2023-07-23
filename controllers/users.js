@@ -43,9 +43,6 @@ const createUser = (req, res, next) => {
   } = req.body;
 
   bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
-    // User.findOne({ email })
-    //   .then((user) => {
-
     User.create({
       name, about, avatar, email, password: hash,
     })
@@ -62,8 +59,6 @@ const createUser = (req, res, next) => {
         }
       })
       .catch(next);
-    // })
-    // .catch(next);
   });
 };
 
