@@ -42,8 +42,9 @@ module.exports.deleteCard = (req, res, next) => {
               .send({ data, message: 'Карточка удалена' });
           })
           .catch(next);
+      } else {
+        throw new ForbidenError('У вас нет прав на удаление данной карточки');
       }
-      throw new ForbidenError('У вас нет прав на удаление данной карточки');
     })
     // .catch((err) => {
     //   if (err.message === 'NotValidId') {
