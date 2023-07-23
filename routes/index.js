@@ -5,7 +5,7 @@ const userRoutes = require('./users');
 const cardRoutes = require('./cards');
 const NotFoundError = require('../errors/not-found-err');
 const auth = require('../middlewares/auth');
-const { linkValid2, linkValid1 } = require('../utils/linkValid')
+const { linkValid } = require('../utils/constants')
 
 const {
   login, createUser,
@@ -15,7 +15,7 @@ router.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(linkValid2),
+    avatar: Joi.string().pattern(linkValid),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   })
@@ -25,7 +25,7 @@ router.post('/signin', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(linkValid1),
+    avatar: Joi.string().pattern(linkValid),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   })
