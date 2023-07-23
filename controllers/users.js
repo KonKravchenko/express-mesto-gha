@@ -43,24 +43,24 @@ const createUser = (req, res, next) => {
   } = req.body;
 
   bcrypt.hash(password, SALT_ROUNDS, (error, hash) => {
-    User.findOne({ email })
-      .then((user) => {
-        if (user) {
-          throw new ConflictingRequestError('Пользователь с таким Email уже зарегестрирован');
-        }
-        User.create({
-          name, about, avatar, email, password: hash,
-        })
-          .then((data) => {
-            res
-              .status(201)
-              .send({
-                name, about, avatar, email,
-              });
-          })
-          .catch(next);
+    // User.findOne({ email })
+    //   .then((user) => {
+    if (error.code === 11000) {
+      throw new ConflictingRequestError('Пользователь с таким Email уже зарегестрирован');
+    }
+    User.create({
+      name, about, avatar, email, password: hash,
+    })
+      .then((data) => {
+        res
+          .status(201)
+          .send({
+            name, about, avatar, email,
+          });
       })
       .catch(next);
+    // })
+    // .catch(next);
   });
 };
 
